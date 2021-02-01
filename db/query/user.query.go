@@ -16,3 +16,8 @@ var GetUserByID string = `
 	MATCH (user:User {ID: $id})
 	RETURN user
 `
+
+var GetUserByUsername string = `
+	MATCH (user:User {Username: $username})
+	RETURN user
+`

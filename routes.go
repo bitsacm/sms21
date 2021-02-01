@@ -33,5 +33,15 @@ func Router(env Env) *mux.Router {
 		).ServeHTTP,
 	)
 
+	r.HandleFunc(
+		"/sign_in",
+		withMiddleware(
+			[]middleware.Middleware{
+				middleware.LogReq,
+			},
+			api.SignInHandler(env.models),
+		).ServeHTTP,
+	)
+
 	return r
 }
