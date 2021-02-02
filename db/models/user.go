@@ -147,9 +147,9 @@ func (u *User) GenerateJWT() (string, error) {
 	return tokenString, nil
 }
 
+// GetUserByUsername fetches a User with the given username.
 func (us *Users) GetUserByUsername(username string) (User, error) {
 	driver := *(us.conn.Driver)
-	log.Println("#######", username)
 	session, err := driver.Session(neo4j.AccessModeRead)
 	if err != nil {
 		return User{}, err
@@ -169,7 +169,6 @@ func (us *Users) GetUserByUsername(username string) (User, error) {
 		}
 
 		if result.Next() {
-			log.Println("Test")
 			return result.Record().GetByIndex(0), nil
 		}
 		return nil, result.Err()

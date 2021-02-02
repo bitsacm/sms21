@@ -78,18 +78,15 @@ func SignInHandler(data models.Models) http.Handler {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
-		payload := struct {
-			Token string `json:"token"`
-			User struct {
+		payload := map[string]interface{} {
+			"token": tokenString,
+			"user": struct {
 				ID string `json:"id"`
 				Username string `json:"username"`
 				Name string `json:"name"`
 				RegToken string `json:"regToken"`
-			} `json:"user"`
-		}{Token: tokenString, User: struct {ID string `json:"id"`
-			Username string `json:"username"`
-			Name string `json:"name"`
-			RegToken string `json:"regToken"`} {ID: user.ID, Username: user.Username, Name: user.Name, RegToken: user.RegToken}}
+			} {user.ID, user.Username, user.Name, user.RegToken},
+		}
 		json.NewEncoder(w).Encode(payload)
 	})
 }
