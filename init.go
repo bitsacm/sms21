@@ -10,8 +10,9 @@ import (
 // Init does all the setup work to start the app
 // (like creating a database connection)
 func Init() Env {
+	// Change the dbURI based on the local database that you are running
 	const (
-		dbURI      string = "neo4j://192.168.2.2:7687"
+		dbURI      string = "neo4j://127.0.0.1:7687"
 		dbUsername string = "neo4j"
 		dbPassword string = "test"
 	)

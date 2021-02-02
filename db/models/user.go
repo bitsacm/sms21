@@ -146,3 +146,39 @@ func (u *User) GenerateJWT() (string, error) {
 
 	return tokenString, nil
 }
+
+// GetUserByUsername fetches a User with the given username.
+func (us *Users) GetUserByUsername(username string) (User, error) {
+	driver := *(us.conn.Driver)
+	session, err := driver.Session(neo4j.AccessModeRead)
+	if err != nil {
+		return User{}, err
+	}
+	defer session.Close()
+
+	userNode, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error){
+		result, err := transaction.Run(
+			query.GetUserByUsername,
+			query.Context{
+				"username": username,
+			},
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if result.Next() {
+			return result.Record().GetByIndex(0), nil
+		}
+		return nil, result.Err()
+	})
+
+	if err != nil {
+		log.Println("Error getting user by username:", err)
+		return User{}, err
+	}
+
+	user := us.SerializeFromNode(userNode.(neo4j.Node))
+	return user, nil
+}
