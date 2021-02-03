@@ -10,6 +10,7 @@ import (
 // to be passed to API handlers for DB access
 type Models struct {
 	Users *Users
+	Stocks *Stocks
 }
 
 // Init returns the Models which can be used in the rest
@@ -23,6 +24,13 @@ func Init(conn *db.Conn) *Models {
 		DataType: reflect.TypeOf(User{}),
 	}
 	models.Users = &users
+
+	// Stocks
+	stocks := Stocks{
+		conn: conn,
+		DataType: reflect.TypeOf(Stock{}),
+	}
+	models.Stocks = &stocks
 
 	return &models
 }
