@@ -43,5 +43,25 @@ func Router(env Env) *mux.Router {
 		).ServeHTTP,
 	)
 
+	r.HandleFunc(
+		"/stock",
+		withMiddleware(
+			[]middleware.Middleware{
+				middleware.LogReq,
+			},
+			api.AddStock(env.models),
+		).ServeHTTP,
+	)
+
+	r.HandleFunc(
+		"/stock/{id}",
+		withMiddleware(
+			[]middleware.Middleware{
+				middleware.LogReq,
+			},
+			api.GetStockData(env.models),
+		).ServeHTTP,
+	)
+
 	return r
 }
