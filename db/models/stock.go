@@ -32,8 +32,8 @@ func (st *Stocks) SerializeFromNode(n neo4j.Node) Stock {
 	return stock.(Stock)
 }
 
-// Create - creates a stock in the database
-func (st *Stocks) Create(s Stock) (string, error) {
+// Add creates a stock in the database
+func (st *Stocks) Add(s Stock) (string, error) {
 	driver := *(st.conn.Driver)
 	session, err := driver.Session(neo4j.AccessModeWrite)
 	if err != nil {

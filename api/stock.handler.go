@@ -9,8 +9,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// AddStock adds a stock to the database
-func AddStock(data models.Models) http.Handler {
+// AddStockHandler adds a stock to the database
+func AddStockHandler(data models.Models) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var stock models.Stock
 		err := json.NewDecoder(r.Body).Decode(&stock)
@@ -19,7 +19,7 @@ func AddStock(data models.Models) http.Handler {
 			return
 		}
 
-		id, addErr := data.Stocks.Create(stock)
+		id, addErr := data.Stocks.Add(stock)
 		if addErr != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Println("Error creating stock:", err)
@@ -37,8 +37,8 @@ func AddStock(data models.Models) http.Handler {
 	})
 }
 
-//GetStockData fetches the data of a stock by stock ID
-func GetStockData(data models.Models) http.Handler {
+// GetStockHandler fetches the data of a stock by stock ID
+func GetStockHandler(data models.Models) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
@@ -52,11 +52,7 @@ func GetStockData(data models.Models) http.Handler {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		payload := struct {
-			ID    string  `json:"id"`
-			Name  string  `json:"name"`
-			Price float64 `json:"price"`
-		}{stock.ID, stock.Name, stock.Price}
-		json.NewEncoder(w).Encode(payload)
+
+		json.NewEncoder(w).Encode(stock)
 	})
 }

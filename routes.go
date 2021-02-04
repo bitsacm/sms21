@@ -49,7 +49,7 @@ func Router(env Env) *mux.Router {
 			[]middleware.Middleware{
 				middleware.LogReq,
 			},
-			api.AddStock(env.models),
+			api.AddStockHandler(env.models),
 		).ServeHTTP,
 	)
 
@@ -59,7 +59,7 @@ func Router(env Env) *mux.Router {
 			[]middleware.Middleware{
 				middleware.LogReq,
 			},
-			api.GetStockData(env.models),
+			api.GetStockHandler(env.models),
 		).ServeHTTP,
 	)
 
