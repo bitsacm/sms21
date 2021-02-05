@@ -17,6 +17,7 @@ var GetUserByID string = `
 	RETURN user
 `
 
+// GetUserByUsername is the neo4j query to fetch user by name
 var GetUserByUsername string = `
 	MATCH (user:User {Username: $username})
 	RETURN user
