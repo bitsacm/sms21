@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
 
@@ -34,6 +35,7 @@ func Auth(data models.Models) Middleware {
 				return
 			}
 
+			log.Println("Token Received = ", claims.ID)
 			user, err := data.Users.GetByID(claims.ID)
 			key := "user"
 			ctx := context.WithValue(r.Context(), key, user)

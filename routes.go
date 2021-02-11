@@ -63,5 +63,16 @@ func Router(env Env) *mux.Router {
 		).ServeHTTP,
 	)
 
+	r.HandleFunc(
+		"/buy_stock",
+		withMiddleware(
+			[]middleware.Middleware{
+				middleware.LogReq,
+				middleware.Auth(env.models),
+			},
+			api.BuyStockHandler(env.models),
+		).ServeHTTP,
+	)
+
 	return r
 }

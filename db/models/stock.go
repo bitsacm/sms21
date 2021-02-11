@@ -19,9 +19,10 @@ type Stocks struct {
 
 // Stock represents an instance of the Stock model
 type Stock struct {
-	ID    string  `neoKey:"ID" json:"id"`
-	Name  string  `neoKey:"Name" json:"name"`
-	Price float64 `neoKey:"Price" json:"price"`
+	ID       string  `neoKey:"ID" json:"id"`
+	Name     string  `neoKey:"Name" json:"name"`
+	Price    float64 `neoKey:"Price" json:"price"`
+	Quantity int64   `neoKey:"Quantity" json:"quantity"`
 }
 
 // SerializeFromNode will parse a neo4j Stock node based on the
@@ -93,6 +94,7 @@ func (st *Stocks) GetByID(ID string) (Stock, error) {
 		}
 
 		if result.Next() {
+			log.Println("Inside")
 			return result.Record().GetByIndex(0), nil
 		}
 

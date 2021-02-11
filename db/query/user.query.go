@@ -8,6 +8,7 @@ var AddUser string = `
 		SET user.Username = $username
 		SET user.Name = $name
 		SET user.RegToken = $regToken
+		SET user.Balance = 10000.00
 	RETURN user
 `
 

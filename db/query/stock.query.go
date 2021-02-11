@@ -6,6 +6,7 @@ var CreateStock string = `
 		SET stock.ID = $id
 		SET stock.Name = $name
 		SET stock.Price = $price
+		SET stock.Quantity = 10000
 	RETURN stock
 `
 

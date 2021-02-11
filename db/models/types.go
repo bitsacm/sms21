@@ -11,6 +11,7 @@ import (
 type Models struct {
 	Users *Users
 	Stocks *Stocks
+	Transactions *Transactions
 }
 
 // Init returns the Models which can be used in the rest
@@ -31,6 +32,13 @@ func Init(conn *db.Conn) *Models {
 		DataType: reflect.TypeOf(Stock{}),
 	}
 	models.Stocks = &stocks
+
+	// Transactions
+	trnasactions := Transactions {
+		conn: conn,
+		DataType: reflect.TypeOf(Transaction{}),
+	}
+	models.Transactions = &trnasactions
 
 	return &models
 }

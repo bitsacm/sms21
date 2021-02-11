@@ -56,3 +56,44 @@ func GetStockHandler(data models.Models) http.Handler {
 		json.NewEncoder(w).Encode(stock)
 	})
 }
+
+func BuyStockHandler(data models.Models) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body := struct {
+			StockID  string `json:"stockId"`
+			Quantity int64  `json:"quantity"`
+		}{}
+		err := json.NewDecoder(r.Body).Decode(&body)
+		log.Println("Body = ", body)
+		if(err != nil) {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		user := r.Context().Value("user").(models.User)
+
+		stock, readStockErr := data.Stocks.GetByID(body.StockID)
+
+		log.Println("Stock = ", stock)
+
+		if(readStockErr != nil) {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println("Error reading stock ", err)
+			return
+		}
+
+		buyTransaction, err := data.Transactions.BuyStock(user, stock, body.Quantity)
+		if(err != nil) {
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"message": err,
+			})
+			log.Println("Error in buying stock ", err)
+			return
+		}
+		
+		log.Println("Transaction Sucessfull", buyTransaction)
+		w.WriteHeader(http.StatusAccepted)
+		return
+	})
+}

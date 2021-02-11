@@ -26,6 +26,7 @@ type User struct {
 	Username string `neoKey:"Username" json:"username"`
 	Name     string `neoKey:"Name" json:"name"`
 	RegToken string `neoKey:"RegToken" json:"regToken"`
+	Balance  float64 `neoKey:"Balance" json:"balance"`
 }
 
 // Claims is the information that we'll encode in a user's JWT
