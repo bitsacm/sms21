@@ -63,5 +63,15 @@ func Router(env Env) *mux.Router {
 		).ServeHTTP,
 	)
 
+	r.HandleFunc(
+		"/transaction",
+		withMiddleware(
+			[]middleware.Middleware{
+				middleware.LogReq,
+			},
+			api.AddTransactionHandler(env.models),
+		).ServeHTTP,
+	)
+
 	return r
 }

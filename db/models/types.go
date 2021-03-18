@@ -9,8 +9,9 @@ import (
 // Models will hold references to all the db models,
 // to be passed to API handlers for DB access
 type Models struct {
-	Users *Users
-	Stocks *Stocks
+	Users        *Users
+	Stocks       *Stocks
+	Transactions *Transactions
 }
 
 // Init returns the Models which can be used in the rest
@@ -27,10 +28,17 @@ func Init(conn *db.Conn) *Models {
 
 	// Stocks
 	stocks := Stocks{
-		conn: conn,
+		conn:     conn,
 		DataType: reflect.TypeOf(Stock{}),
 	}
 	models.Stocks = &stocks
+
+	// Transactions
+	transactions := Transactions{
+		conn:     conn,
+		DataType: reflect.TypeOf(Transaction{}),
+	}
+	models.Transactions = &transactions
 
 	return &models
 }
