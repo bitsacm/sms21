@@ -1,7 +1,10 @@
 package models
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"reflect"
 	"time"
 
@@ -21,9 +24,8 @@ type Users struct {
 
 // User represents an instance of the User model
 type User struct {
-	ID       string `neoKey:"ID" json:"id"`
-	Password string `neoKey:"Password" json:"password"`
-	Username string `neoKey:"Username" json:"username"`
+	ID       string `neoKey:"ID"`
+	Username string `neoKey:"Username" json:"email"`
 	Name     string `neoKey:"Name" json:"name"`
 	RegToken string `neoKey:"RegToken" json:"regToken"`
 }
@@ -51,8 +53,6 @@ func (us *Users) Add(u User) error {
 	}
 	defer session.Close()
 
-	passwordHash := util.HashPassword(u.Password)
-	u.Password = passwordHash
 	anonID := util.GenerateID(u.Username)
 	u.ID = anonID
 
@@ -61,7 +61,6 @@ func (us *Users) Add(u User) error {
 			query.AddUser,
 			query.Context{
 				"id":       u.ID,
-				"password": passwordHash,
 				"username": u.Username,
 				"name":     u.Name,
 				"regToken": u.RegToken,
@@ -156,7 +155,7 @@ func (us *Users) GetUserByUsername(username string) (User, error) {
 	}
 	defer session.Close()
 
-	userNode, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error){
+	userNode, err := session.ReadTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
 			query.GetUserByUsername,
 			query.Context{
@@ -181,4 +180,33 @@ func (us *Users) GetUserByUsername(username string) (User, error) {
 
 	user := us.SerializeFromNode(userNode.(neo4j.Node))
 	return user, nil
+}
+
+func GetUserData(access_token string) User {
+	url := `https://www.googleapis.com/oauth2/v2/userinfo`
+
+	// Create a new request using http
+	req, err := http.NewRequest("GET", url, nil)
+
+	// add authorization header to the req
+	req.Header.Add("Authorization", "Bearer "+access_token)
+
+	// Send req using http Client
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var u User
+
+	err = json.Unmarshal([]byte(body), &u)
+
+	return u
 }

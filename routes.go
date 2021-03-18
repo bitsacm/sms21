@@ -24,22 +24,22 @@ func Router(env Env) *mux.Router {
 	r := mux.NewRouter()
 
 	r.HandleFunc(
-		"/sign_up",
+		"/auth/google",
 		withMiddleware(
 			[]middleware.Middleware{
 				middleware.LogReq,
 			},
-			api.SignUpHandler(env.models),
+			api.GoogleAuthScreen(env.models),
 		).ServeHTTP,
 	)
 
 	r.HandleFunc(
-		"/sign_in",
+		"/auth/google/redirect",
 		withMiddleware(
 			[]middleware.Middleware{
 				middleware.LogReq,
 			},
-			api.SignInHandler(env.models),
+			api.GoogleTokenExchange(env.models),
 		).ServeHTTP,
 	)
 
@@ -60,16 +60,6 @@ func Router(env Env) *mux.Router {
 				middleware.LogReq,
 			},
 			api.GetStockHandler(env.models),
-		).ServeHTTP,
-	)
-
-	r.HandleFunc(
-		"/transaction",
-		withMiddleware(
-			[]middleware.Middleware{
-				middleware.LogReq,
-			},
-			api.AddTransactionHandler(env.models),
 		).ServeHTTP,
 	)
 
