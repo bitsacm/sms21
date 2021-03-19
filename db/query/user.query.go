@@ -4,7 +4,6 @@ package query
 var AddUser string = `
 	CREATE (user:User)
 		SET user.ID = $id
-		SET user.Password = $password
 		SET user.Username = $username
 		SET user.Name = $name
 		SET user.RegToken = $regToken

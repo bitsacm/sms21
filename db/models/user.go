@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -178,6 +179,9 @@ func (us *Users) GetUserByUsername(username string) (User, error) {
 		return User{}, err
 	}
 
+	if userNode == nil {
+		return User{}, errors.New("User not found")
+	}
 	user := us.SerializeFromNode(userNode.(neo4j.Node))
 	return user, nil
 }
